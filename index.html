@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Water Infrastructure Projects Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <h1>Global Water Infrastructure Projects Dashboard</h1>
+            <p class="subtitle">Tracking worldwide water infrastructure investments, project statuses, and regional distribution patterns using GIS-based data</p>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Filtering Panel -->
+            <div class="filters-section">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Filter Projects</h3>
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="region-filter">Region</label>
+                                <select id="region-filter" class="form-control">
+                                    <option value="">All Regions</option>
+                                    <option value="Middle East & North Africa">Middle East & North Africa</option>
+                                    <option value="North America">North America</option>
+                                    <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
+                                    <option value="South Asia">South Asia</option>
+                                    <option value="East Asia & Pacific">East Asia & Pacific</option>
+                                    <option value="Europe">Europe</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="type-filter">Project Type</label>
+                                <select id="type-filter" class="form-control">
+                                    <option value="">All Types</option>
+                                    <option value="Wastewater Treatment">Wastewater Treatment</option>
+                                    <option value="Desalination">Desalination</option>
+                                    <option value="Rural Water Access">Rural Water Access</option>
+                                    <option value="Water Distribution">Water Distribution</option>
+                                    <option value="Irrigation Systems">Irrigation Systems</option>
+                                    <option value="Groundwater Management">Groundwater Management</option>
+                                    <option value="Water Storage">Water Storage</option>
+                                    <option value="Flood Management">Flood Management</option>
+                                    <option value="Water Recycling">Water Recycling</option>
+                                    <option value="Smart Water Networks">Smart Water Networks</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="status-filter">Status</label>
+                                <select id="status-filter" class="form-control">
+                                    <option value="">All Statuses</option>
+                                    <option value="Planning">Planning</option>
+                                    <option value="Design">Design</option>
+                                    <option value="Tender">Tender</option>
+                                    <option value="Construction">Construction</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="investment-filter">Investment Range</label>
+                                <select id="investment-filter" class="form-control">
+                                    <option value="">All Ranges</option>
+                                    <option value="0-50">$0-50M</option>
+                                    <option value="50-200">$50-200M</option>
+                                    <option value="200-500">$200-500M</option>
+                                    <option value="500+">$500M+</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="card">
+                    <div class="card__body">
+                        <div class="map-header">
+                            <h2>Global Water Infrastructure Projects Map</h2>
+                            <div class="map-toggles">
+                                <div class="toggle-group">
+                                    <h4>Project Types</h4>
+                                    <div class="toggle-buttons" id="type-toggles">
+                                        <!-- Toggle buttons will be generated by JavaScript -->
+                                    </div>
+                                </div>
+                                <div class="toggle-group">
+                                    <h4>Project Status</h4>
+                                    <div class="toggle-buttons" id="status-toggles">
+                                        <!-- Toggle buttons will be generated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="map" class="map-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="statistics-section">
+                <h2>Global Water Infrastructure Statistics</h2>
+                <div class="stats-grid">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Investment by Region (2024)</h3>
+                            <div class="chart-container">
+                                <canvas id="investment-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Projects by Type</h3>
+                            <div class="chart-container">
+                                <canvas id="projects-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Project Status Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="status-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Details Section -->
+            <div class="projects-section">
+                <div class="card">
+                    <div class="card__body">
+                        <h2>Project Details</h2>
+                        <div class="table-container">
+                            <table id="projects-table" class="projects-table">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Country</th>
+                                        <th>Region</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Cost (USD)</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projects-table-body">
+                                    <!-- Table rows will be generated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trends and Insights Section -->
+            <div class="insights-section">
+                <div class="card">
+                    <div class="card__body">
+                        <h2>Key Trends & Insights</h2>
+                        <div class="insights-grid">
+                            <div class="insight-card">
+                                <div class="insight-icon">📈</div>
+                                <div class="insight-content">
+                                    <h4>Investment Growth</h4>
+                                    <p>96% of organizations plan to maintain or increase water investments in 2025</p>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">⚠️</div>
+                                <div class="insight-content">
+                                    <h4>Project Sustainability</h4>
+                                    <p>30-50% of WASH projects fail after 2-5 years</p>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">🔍</div>
+                                <div class="insight-content">
+                                    <h4>Monitoring Gap</h4>
+                                    <p>Less than 5% of projects are visited after construction</p>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">🏛️</div>
+                                <div class="insight-content">
+                                    <h4>Public Funding</h4>
+                                    <p>91% of funding comes from public sector</p>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">🎯</div>
+                                <div class="insight-content">
+                                    <h4>SDG Target</h4>
+                                    <p>Investment needs must triple to meet SDG 6 by 2030</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Global Water Infrastructure Dashboard. Last updated: Monday, June 02, 2025</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
